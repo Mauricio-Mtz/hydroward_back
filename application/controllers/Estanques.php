@@ -95,14 +95,19 @@ class Estanques extends CI_Controller
     {
         $qrCode = $this->input->post('qrCode');
         $venta = $this->Estanques_model->get_qr_code($qrCode);
-
         if ($venta) {
-            $this->output->set_content_type('application/json');
-            $this->output->set_output(json_encode(['venta' => $venta]));
+            $response = array(
+                'success' => true,
+                'message' => 'Se encontro la venta',
+                'venta' => $venta
+            );
         } else {
-            $this->output->set_status_header(404);
-            $this->output->set_output(json_encode(['error' => 'QR code not found']));
+            $response = array(
+                'success' => false,
+                'message' => 'No se encontro la venta'
+            );
         }
+        echo json_encode($response);
     }
     public function obtenerPeces()
     {
@@ -120,6 +125,33 @@ class Estanques extends CI_Controller
             $response = array('success' => true, 'message' => 'Pez and estanque registered successfully.');
         } else {
             $response = array('success' => false, 'message' => 'Error registering pez and estanque.');
+        }
+        echo json_encode($response);
+    }
+
+
+
+
+    public function registrarEstanque(/*$nombre, $idPez, $idVenta*/) {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        $nombre = $this->input->post('nombre');
+        $idPez = $this->input->post('idPez');
+        $idVenta = $this->input->post('idVenta');
+
+        $idEstanque = $this->Estanques_model->registrarEstanque($nombre, $idPez, $idVenta);
+        if ($idEstanque) {
+            $response = array(
+                'success' => true,
+                'message' => 'El registro se realizó con éxito',
+                'data' => $idEstanque
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Hubo un fallo en el registro'
+            );
         }
         echo json_encode($response);
     }

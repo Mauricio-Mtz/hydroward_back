@@ -32,7 +32,7 @@ class Estanques_model extends CI_Model
         $query = $this->db->get_where('detalle_venta', array('qr' => $qrCode));
         if ($query && $query->num_rows() > 0) {
             $dv = $query->row_array();
-            $venta_id = $dv['venta_id'];
+            $venta_id = $dv['id'];
             return $venta_id;
         }
         return null;
@@ -93,4 +93,32 @@ class Estanques_model extends CI_Model
             return false;
         }
     }
+
+
+
+    public function registrarEstanque($nombre, $pez, $idVenta) {
+        // Obtenemos los datos del pez desde la tabla de peces
+        $this->db->where('id', $pez);
+        $pezData = $this->db->get('peces')->row_array();
+    
+        // Construimos el array de datos para insertar en la tabla de estanques
+        $data = array(
+            'nombre' => $nombre,
+            'alimentacion' => $pezData['alimentacion'],
+            'tiempo_no_alim' => $pezData['tiempo_no_alim'],
+            'tiempo_si_alim' => $pezData['tiempo_si_alim'],
+            'temperatura_min' => $pezData['temperatura_min'],
+            'temperatura_max' => $pezData['temperatura_max'],
+            'ph_min' => $pezData['ph_min'],
+            'ph_max' => $pezData['ph_max'],
+            'detalle_venta_id' => $idVenta
+        );
+    
+        // Insertamos los datos en la tabla de estanques
+        $this->db->insert('estanque', $data);
+    
+        // Retornamos el ID del estanque insertado
+        return $this->db->insert_id();
+    }
+    
 }

@@ -63,50 +63,6 @@ class Login extends CI_Controller
         }
         echo json_encode($response);
     }
-
-    public function loginM()
-    {
-        $correo = $this->input->post('email');
-        $contrasena = $this->input->post('password');
-        $usuario = $this->Login_model->get_login($correo, $contrasena);
-
-        if ($usuario) {
-            $response = array(
-                'success' => true,
-                'message' => 'Usuario autenticado correctamente',
-                'user_id' => $usuario['id'],
-                'user_type' => $usuario['tipo']
-            );
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Correo o contraseña incorrectos'
-            );
-        }
-        echo json_encode($response);
-    }
-
-    public function obtenerUsuarioM()
-    {
-        $id = $this->input->post('id');
-        $usuario = $this->Estanque_model->obtenerUsuarioPorId($id);
-
-        if ($usuario) {
-            $response = array(
-                'success' => true,
-                'message' => 'Datos del usuario obtenidos correctamente',
-                'user' => $usuario
-            );
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Usuario no encontrado'
-            );
-        }
-        header('Content-Type: application/json');
-        echo json_encode($response);
-    }
-
     public function signIn()
     {
         header('Access-Control-Allow-Origin: *');
