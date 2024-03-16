@@ -2,19 +2,16 @@
 defined('BASEPATH') or exit ('No direct script access allowed');
 class Estanques_model extends CI_Model
 {
-    public function obtenerEstanquesPorId($id)
-    {
-        $this->db->select('e.nombre AS nombre, e.id AS id, e.temperatura_min AS temp_min, 
-        e.temperatura_max as temp_max, e.tiempo_no_alim AS no_alim, e.tiempo_si_alim AS si_alim,
-        e.ph_min,e.ph_max,e.peces_id,e.detalle_venta_id,e.alimentacion, e.cantidad AS cantidad');
-        $this->db->from('estanque e');
-        $this->db->join('detalle_venta dv', 'dv.id = e.detalle_venta_id');
-        $this->db->join('venta v', 'v.id = dv.venta_id');
-        $this->db->join('usuarios u', 'v.usuario_id = u.id');
-        $this->db->where('e.status', 1);
-        $this->db->where('u.id', $id);
+    public function obtenerEstanquesPorId($idUser) {
+        // Realizar la consulta utilizando el ORM de CodeIgniter
+        $this->db->select('*');
+        $this->db->from('estanque');
+        $this->db->join('usuario_estanque', 'estanque.id = usuario_estanque.estanque_id');
+        $this->db->where('usuario_estanque.usuario_id', $idUser);
         $query = $this->db->get();
-        return $query->result_array();
+
+        // Retornar los resultados de la consulta
+        return $query->result();
     }
     public function obtenerEstanquePorId($id)
     {
@@ -96,11 +93,12 @@ class Estanques_model extends CI_Model
 
 
 
-    public function registrarEstanque($nombre, $pez, $idVenta) {
+    public function registrarEstanque($nombre, $pez, $idVenta)
+    {
         // Obtenemos los datos del pez desde la tabla de peces
         $this->db->where('id', $pez);
         $pezData = $this->db->get('peces')->row_array();
-    
+
         // Construimos el array de datos para insertar en la tabla de estanques
         $data = array(
             'nombre' => $nombre,
@@ -113,12 +111,21 @@ class Estanques_model extends CI_Model
             'ph_max' => $pezData['ph_max'],
             'detalle_venta_id' => $idVenta
         );
-    
+
         // Insertamos los datos en la tabla de estanques
         $this->db->insert('estanque', $data);
-    
+
         // Retornamos el ID del estanque insertado
         return $this->db->insert_id();
     }
-    
+    public function asignarEstanqueUsuario($idUser, $idEstanque)
+    {
+        $data = array(
+            'usuario_id' => $idUser,
+            'estanque_id' => $idEstanque,
+        );
+        $this->db->insert('usuario_estanque', $data);
+        return $this->db->insert_id();
+    }
+
 }

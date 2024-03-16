@@ -51,11 +51,14 @@ class Estanques extends CI_Controller
         }
         echo json_encode($response);
     }
-    public function obtenerEstanques()
-    {
-        $id = $this->input->post('id');
-        $estanques = $this->Estanques_model->obtenerEstanquesPorId($id);
+    public function obtenerEstanques() {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        
+        $idUser = $this->input->post('idUser');
 
+        $estanques = $this->Estanques_model->obtenerEstanquesPorId($idUser);
         if ($estanques) {
             $response = array(
                 'success' => true,
@@ -68,7 +71,6 @@ class Estanques extends CI_Controller
                 'message' => 'No se encontraron estanques para este usuario'
             );
         }
-        header('Content-Type: application/json');
         echo json_encode($response);
     }
     public function obtenerEstanqueC()
@@ -93,13 +95,16 @@ class Estanques extends CI_Controller
     }
     public function ObtenerQrCode()
     {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
         $qrCode = $this->input->post('qrCode');
-        $venta = $this->Estanques_model->get_qr_code($qrCode);
-        if ($venta) {
+        $venta_id = $this->Estanques_model->get_qr_code($qrCode);
+        if ($venta_id) {
             $response = array(
                 'success' => true,
                 'message' => 'Se encontro la venta',
-                'venta' => $venta
+                'venta' => $venta_id
             );
         } else {
             $response = array(
@@ -132,16 +137,19 @@ class Estanques extends CI_Controller
 
 
 
-    public function registrarEstanque(/*$nombre, $idPez, $idVenta*/) {
+    public function registrarEstanque(/*$nombre, $idPez, $idVenta*/)
+    {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         header('Content-Type: application/json');
         $nombre = $this->input->post('nombre');
         $idPez = $this->input->post('idPez');
         $idVenta = $this->input->post('idVenta');
+        $idUser = $this->input->post('idUser');
 
         $idEstanque = $this->Estanques_model->registrarEstanque($nombre, $idPez, $idVenta);
-        if ($idEstanque) {
+        $idInsert = $this->Estanques_model->asignarEstanqueUsuario($idUser, $idEstanque);
+        if ($idEstanque && $idInsert) {
             $response = array(
                 'success' => true,
                 'message' => 'El registro se realizó con éxito',
