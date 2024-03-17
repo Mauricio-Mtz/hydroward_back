@@ -27,32 +27,21 @@ class Estanques_model extends CI_Model
     }
     public function get_qr_code($qrCode, $userId)
     {
-        // Busca en la tabla detalle_venta utilizando el código QR
         $detalleVentaQuery = $this->db->get_where('detalle_venta', array('qr' => $qrCode));
 
-        // Si se encuentra el registro en la tabla detalle_venta
         if ($detalleVentaQuery->num_rows() > 0) {
-            // Obtiene la ID de detalle de venta
             $detalleVenta = $detalleVentaQuery->row();
             $detalleVentaId = $detalleVenta->id;
 
-            // Verifica si la ID de detalle de venta existe en la tabla estanques
             $estanqueQuery = $this->db->get_where('estanque', array('detalle_venta_id' => $detalleVentaId));
 
-            // Si se encuentra en la tabla estanques
             if ($estanqueQuery->num_rows() > 0) {
-                // Realiza el insert en la tabla usuario_estanque
                 $this->db->insert('usuario_estanque', array('usuario_id' => $userId, 'estanque_id' => $estanqueQuery->row()->id));
-
-                // Devuelve la ID de detalle de venta y que existe en estanques
                 return array('detalleVentaId' => $detalleVentaId, 'existeEnEstanques' => true);
             } else {
-                // Devuelve la ID de detalle de venta pero no existe en estanques
                 return array('detalleVentaId' => $detalleVentaId, 'existeEnEstanques' => false);
             }
         }
-
-        // Si no se encuentra en detalle_venta, devuelve null
         return null;
     }
     public function registrarNombreE($nombre, $idVenta)
