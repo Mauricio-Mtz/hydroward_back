@@ -75,8 +75,11 @@ class Estanques extends CI_Controller
     }
     public function obtenerEstanqueC()
     {
-        $id = $this->input->post('id');
-        $estanques = $this->Estanques_model->obtenerEstanquePorId($id);
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        $idEstanque = $this->input->post('idEstanque');
+        $estanques = $this->Estanques_model->obtenerEstanquePorId($idEstanque);
 
         if ($estanques) {
             $response = array(
@@ -87,19 +90,23 @@ class Estanques extends CI_Controller
         } else {
             $response = array(
                 'success' => false,
-                'message' => 'No se encontraron estanques para este usuario'
+                'message' => 'No se encontraron estanques para este usuario',
+                'id' => $idEstanque
             );
         }
         header('Content-Type: application/json');
         echo json_encode($response);
     }
-    public function ObtenerQrCode()
+    public function ObtenerQrCode(/*$qrCode, $userId*/)
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         header('Content-Type: application/json');
+
         $qrCode = $this->input->post('qrCode');
-        $venta_id = $this->Estanques_model->get_qr_code($qrCode);
+        $userId = $this->input->post('idUser');
+        
+        $venta_id = $this->Estanques_model->get_qr_code($qrCode, $userId);
         if ($venta_id) {
             $response = array(
                 'success' => true,
@@ -148,6 +155,38 @@ class Estanques extends CI_Controller
         $idUser = $this->input->post('idUser');
 
         $idEstanque = $this->Estanques_model->registrarEstanque($nombre, $idPez, $idVenta);
+        $idInsert = $this->Estanques_model->asignarEstanqueUsuario($idUser, $idEstanque);
+        if ($idEstanque && $idInsert) {
+            $response = array(
+                'success' => true,
+                'message' => 'El registro se realizó con éxito',
+                'data' => $idEstanque
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Hubo un fallo en el registro'
+            );
+        }
+        echo json_encode($response);
+    }
+    public function registrarEstanqueManual(/*$nombre, $alimentacion, $noAlim, $siAlim, $tempMin, $tempMax, $phMin, $phMax, $idVenta, $idUser*/)
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        $nombre = $this->input->post('nombre');
+        $alimentacion = $this->input->post('alimentacion');
+        $noAlim = $this->input->post('noAlim');
+        $siAlim = $this->input->post('siAlim');
+        $tempMin = $this->input->post('tempMin');
+        $tempMax = $this->input->post('tempMax');
+        $phMin = $this->input->post('phMin');
+        $phMax = $this->input->post('phMax');
+        $idVenta = $this->input->post('idVenta');
+        $idUser = $this->input->post('idUser');
+
+        $idEstanque = $this->Estanques_model->registrarEstanqueManual($nombre, $alimentacion, $noAlim, $siAlim, $tempMin, $tempMax, $phMin, $phMax, $idVenta);
         $idInsert = $this->Estanques_model->asignarEstanqueUsuario($idUser, $idEstanque);
         if ($idEstanque && $idInsert) {
             $response = array(
