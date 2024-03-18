@@ -144,10 +144,9 @@ class Productos extends CI_Controller
 
         $result = $this->Productos_model->actualizar_producto($id, $nombre, $descripcion, $precio, $tipo, $stock, $imagen_nombre);
         if ($result >= 0) {
-            $message = $result > 0 ? 'Producto actualizado correctamente' : 'No se realizaron cambios';
             $response = array(
                 'success' => true,
-                'message' => $message
+                'message' => 'Producto actualizado correctamente'
             );
         } else {
             $response = array(
