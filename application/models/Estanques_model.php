@@ -36,14 +36,24 @@ class Estanques_model extends CI_Model
             $estanqueQuery = $this->db->get_where('estanque', array('detalle_venta_id' => $detalleVentaId));
 
             if ($estanqueQuery->num_rows() > 0) {
-                $this->db->insert('usuario_estanque', array('usuario_id' => $userId, 'estanque_id' => $estanqueQuery->row()->id));
-                return array('detalleVentaId' => $detalleVentaId, 'existeEnEstanques' => true);
+                $estanque = $estanqueQuery->row();
+                $estanqueId = $estanque->id;
+
+                $existingEstanqueQuery = $this->db->get_where('usuario_estanque', array('usuario_id' => $userId, 'estanque_id' => $estanqueId));
+
+                if ($existingEstanqueQuery->num_rows() > 0) {
+                    return array('detalleVentaId' => $detalleVentaId, 'existeEnEstanques' => true, 'mensaje' => 'El usuario ya tiene este estanque asignado.');
+                } else {
+                    $this->db->insert('usuario_estanque', array('usuario_id' => $userId, 'estanque_id' => $estanqueId));
+                    return array('detalleVentaId' => $detalleVentaId, 'existeEnEstanques' => true);
+                }
             } else {
                 return array('detalleVentaId' => $detalleVentaId, 'existeEnEstanques' => false);
             }
         }
         return null;
     }
+
     public function registrarNombreE($nombre, $idVenta)
     {
         $data = array(
@@ -53,7 +63,7 @@ class Estanques_model extends CI_Model
         $this->db->insert('estanque', $data);
         return $this->db->insert_id();
     }
-    public function editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax, $cantidad, $pez)
+    public function editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax)
     {
         $data = array(
             'nombre' => $nombre,
@@ -63,9 +73,7 @@ class Estanques_model extends CI_Model
             'ph_max' => $pMax,
             'ph_min' => $pMin,
             'tiempo_no_alim' => $nA,
-            'tiempo_si_alim' => $sA,
-            'cantidad' => $cantidad,
-            'peces_id' => $pez,
+            'tiempo_si_alim' => $sA
         );
         $this->db->where('id', $id);
         $this->db->update('estanque', $data);

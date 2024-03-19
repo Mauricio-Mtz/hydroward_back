@@ -32,6 +32,7 @@ class Estanques extends CI_Controller
     public function editarEstanque()
     {
         $id = $this->input->post('estanque');
+        $nombre = $this->input->post('nombre');
         $alim = $this->input->post('alimentacion');
         $tMin = $this->input->post('tempMin');
         $tMax = $this->input->post('tempMax');
@@ -39,11 +40,8 @@ class Estanques extends CI_Controller
         $sA = $this->input->post('siAlim');
         $pMin = $this->input->post('phMin');
         $pMax = $this->input->post('phMax');
-        $nombre = $this->input->post('nombre');
-        $cantidad = $this->input->post('cantidad');
-        $pez = $this->input->post('pez');
 
-        $query = $this->Estanques_model->editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax, $cantidad, $pez); // Llama a la función para registrar el nombre y obtener el ID del estanque
+        $query = $this->Estanques_model->editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax);
         if ($query) {
             $response = array('success' => true);
         } else {
