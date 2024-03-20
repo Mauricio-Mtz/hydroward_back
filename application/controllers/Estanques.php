@@ -49,11 +49,12 @@ class Estanques extends CI_Controller
         }
         echo json_encode($response);
     }
-    public function obtenerEstanques() {
+    public function obtenerEstanques()
+    {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
         header('Content-Type: application/json');
-        
+
         $idUser = $this->input->post('idUser');
 
         $estanques = $this->Estanques_model->obtenerEstanquesPorId($idUser);
@@ -103,7 +104,7 @@ class Estanques extends CI_Controller
 
         $qrCode = $this->input->post('qrCode');
         $userId = $this->input->post('idUser');
-        
+
         $venta_id = $this->Estanques_model->get_qr_code($qrCode, $userId);
         if ($venta_id) {
             $response = array(
@@ -196,6 +197,26 @@ class Estanques extends CI_Controller
             $response = array(
                 'success' => false,
                 'message' => 'Hubo un fallo en el registro'
+            );
+        }
+        echo json_encode($response);
+    }
+    public function obtenerUsuariosConEstanques()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        $usuarios = $this->Estanques_model->getUsuariosConEstanques();
+        if ($usuarios) {
+            $response = array(
+                'success' => true,
+                'message' => 'Datos de los usuarios obtenidos correctamente',
+                'usuarios' => $usuarios
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'No se encontraron usuarios'
             );
         }
         echo json_encode($response);
