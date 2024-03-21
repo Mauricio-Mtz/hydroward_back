@@ -26,7 +26,7 @@ class Usuarios_model extends CI_Model
     public function obtener_usuarios()
     {
         $this->db->select('id, nombre, apellido, telefono, correo, contrasena, tipo, status');
-        return $this->db->get('Usuarios')->result_array();
+        return $this->db->get('usuarios')->result_array();
     }
 
     public function obtener_usuario($id)

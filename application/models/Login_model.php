@@ -28,11 +28,11 @@ class Login_model extends CI_Model
         $correo = $this->db->escape_str($correo);
         $contrasena = $this->db->escape_str($contrasena);
 
-        $hashContrasena = md5($contrasena);
+        // $hashContrasena = md5($contrasena);
 
         $data = array(
             'correo' => $correo,
-            'contrasena' => $hashContrasena,
+            'contrasena' => $contrasena,
             'nombre' => $nombre,
             'apellido' => $apellido,
             'telefono' => $telefono
