@@ -40,8 +40,10 @@ class Estanques extends CI_Controller
         $sA = $this->input->post('siAlim');
         $pMin = $this->input->post('phMin');
         $pMax = $this->input->post('phMax');
+        $latitud = $this->input->post('latitud');
+        $longitud = $this->input->post('longitud');
 
-        $query = $this->Estanques_model->editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax);
+        $query = $this->Estanques_model->editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax, $latitud, $longitud);
         if ($query) {
             $response = array('success' => true);
         } else {

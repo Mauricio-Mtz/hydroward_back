@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') or exit ('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 class Estanques_model extends CI_Model
 {
     public function obtenerEstanquesPorId($idUser)
@@ -16,9 +16,20 @@ class Estanques_model extends CI_Model
     }
     public function obtenerEstanquePorId($idEstanque)
     {
-        $this->db->select('e.nombre AS nombre, e.id AS id, e.temperatura_min AS temp_min, 
-    e.temperatura_max as temp_max, e.tiempo_no_alim AS no_alim, e.tiempo_si_alim AS si_alim,
-    e.ph_min,e.ph_max,e.detalle_venta_id,e.alimentacion');
+        $this->db->select('
+        e.id, 
+        e.nombre, 
+        e.alimentacion,
+        e.tiempo_no_alim AS no_alim, 
+        e.tiempo_si_alim AS si_alim,
+        e.temperatura_min AS temp_min, 
+        e.temperatura_max as temp_max, 
+        e.ph_min,
+        e.ph_max,
+        e.latitud,
+        e.longitud,
+        e.detalle_venta_id
+        ');
         $this->db->from('estanque as e');
         $this->db->where('e.id', $idEstanque);
         $this->db->where('e.status', 1);
@@ -63,7 +74,7 @@ class Estanques_model extends CI_Model
         $this->db->insert('estanque', $data);
         return $this->db->insert_id();
     }
-    public function editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax)
+    public function editarE($nombre, $id, $alim, $tMin, $tMax, $nA, $sA, $pMin, $pMax, $latitud, $longitud)
     {
         $data = array(
             'nombre' => $nombre,
@@ -73,7 +84,9 @@ class Estanques_model extends CI_Model
             'ph_max' => $pMax,
             'ph_min' => $pMin,
             'tiempo_no_alim' => $nA,
-            'tiempo_si_alim' => $sA
+            'tiempo_si_alim' => $sA,
+            'latitud' => $latitud,
+            'longitud' => $longitud
         );
         $this->db->where('id', $id);
         $this->db->update('estanque', $data);
