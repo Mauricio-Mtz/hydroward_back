@@ -82,43 +82,16 @@ class Firebase extends CI_Controller
             echo "Documento creado"; // Imprime un mensaje si la solicitud es exitosa
         }
     }
-
-    public function tessdt()
+    public function get_data()
     {
-        if ($this->input->raw_input_stream[0] == "{") {
-            $input = json_decode($this->input->raw_input_stream);
-            $mac = $input->mac_esclavo;
-        } else {
-            $mac = $this->input->post("mac_esclavo");
-        }
-
-        $data = $this->Sensor_model->test($mac); //Se obtienen datos de la BD SQL
-        if ($data == null) {
-            echo 'No se encontro la tarjeta';
-            return;
-        }
-        $fecha = new DateTime();
-        $nueva_zona_horaria = new DateTimeZone('America/Mexico_City');
-        $fecha->setTimezone($nueva_zona_horaria);
-
-        // Configura los datos que deseas enviar en el cuerpo de la solicitud POST
-        $iot = array(
-            "fields" => array(
-                "id_maestro" => array("integerValue" => $data->maestro),
-                "id_esclavo" => array("integerValue" => $data->id_dispositivo),
-                "id_cosecha" => array("integerValue" => $data->id_cosecha),
-                "cosecha" => array("stringValue" => $data->cosecha),
-                "dispositivo" => array("stringValue" => $data->nombre),
-                "fecha" => array("stringValue" => $fecha->format("Y-m-d H:i:s")),
-                "temp_amb" => array("doubleValue" => $input->temp_amb),
-                "hum_amb" => array("doubleValue" => $input->hum_amb),
-                "hum_sue" => array("doubleValue" => $input->hum_sue),
-            )
-        );
-        //Madar datos al firebase
-        $firestore_url = "https://firestore.googleapis.com/v1/projects/testesp-36e82/databases/(default)/documents/pruebas";
-
-        // Configura las opciones de la solicitud POST
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+    
+        // URL del servicio Firestore
+        $firestore_url = "https://firestore.googleapis.com/v1/projects/hydroward-aaae8/databases/(default)/documents/sensores";
+    
+        // Configura las opciones de la solicitud GET con cURL
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $firestore_url);
         curl_setopt(
@@ -129,18 +102,45 @@ class Firebase extends CI_Controller
                 'Content-Type: application/json',
             )
         );
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($iot));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_close($ch);
-
-        // Realiza la solicitud POST a Firestore
+    
+        // Realiza la solicitud GET a Firestore
         $response = curl_exec($ch);
-        if (!$result = curl_exec($ch)) {
-            echo "ERROR al mandar datos a firebase";
-            echo $response;
+    
+        // Cierra el recurso cURL
+        curl_close($ch);
+    
+        // Maneja la respuesta de Firestore
+        if ($response === false) {
+            $response = array(
+                'success' => false,
+                'message' => 'ERROR al recibir datos de firebase'
+            );
         } else {
-            echo "Documento creado";
+            $data = json_decode($response, true);
+    
+            if (isset($data['documents']) && is_array($data['documents'])) {
+                $processed_data = array_map(function ($document) {
+                    $processed_fields = array();
+                    foreach ($document['fields'] as $key => $value) {
+                        $processed_fields[$key] = reset($value); // Extrae el valor real
+                    }
+                    return $processed_fields;
+                }, $data['documents']);
+    
+                $response = array(
+                    'success' => true,
+                    'message' => 'Datos obtenidos correctamente',
+                    'data' => $processed_data
+                );
+            } else {
+                $response = array(
+                    'success' => false,
+                    'message' => 'No se encontraron documentos en la respuesta de Firebase'
+                );
+            }
         }
+        echo json_encode($response);
     }
+    
 }

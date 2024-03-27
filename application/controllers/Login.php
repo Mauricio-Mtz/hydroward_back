@@ -41,6 +41,29 @@ class Login extends CI_Controller
         }
         echo json_encode($response);
     }
+    public function loginApi()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        $correo = $this->input->post('email');
+
+        $usuario = $this->Login_model->get_login_api($correo);
+
+        if ($usuario) {
+            $response = array(
+                'success' => true,
+                'message' => 'Usuario autenticado correctamente',
+                'usuario' => $usuario,
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Correo o contraseña incorrectos'
+            );
+        }
+        echo json_encode($response);
+    }
     public function obtenerUsuario()
     {
         header('Access-Control-Allow-Origin: *');

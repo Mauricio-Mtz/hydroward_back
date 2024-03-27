@@ -31,7 +31,6 @@ class Carrito extends CI_Controller
                 'message' => 'No se encontro el carrito'
             );
         }
-        header('Content-Type: application/json');
         echo json_encode($response);
     }
 }
