@@ -23,5 +23,45 @@ class Carrito_model extends CI_Model
 
         return $query->result_array();
     }
+    public function mod_actualizar_cantidad($idProd, $cant)
+    {
+        $query = $this->db->query("
+            UPDATE carrito_de_compras
+            SET cantidad = $cant
+            WHERE id = $idProd;
+        ");
+    
+        if ($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    public function mod_eliminar_producto($idProd)
+    {
+        $query = $this->db->query("
+            DELETE FROM carrito_de_compras
+            WHERE id = $idProd;
+        ");
+    
+        if ($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }   
+    public function mod_eliminar_carrito($idUser)
+    {
+        $query = $this->db->query("
+            DELETE FROM carrito_de_compras
+            WHERE usuario_id = $idUser;
+        ");
+    
+        if ($query) {
+            return true;
+        } else {
+            return false;
+        }
+    }    
 }
 ?>

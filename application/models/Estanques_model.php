@@ -192,7 +192,7 @@ class Estanques_model extends CI_Model
                 $estanques_ids = explode(',', $usuario->estanques_ids);
 
                 // Consultar los detalles de los estanques
-                $estanques = $this->db->select('id, nombre')
+                $estanques = $this->db->select('id, nombre, latitud, longitud   ')
                     ->from('estanque')
                     ->where_in('id', $estanques_ids)
                     ->get()
