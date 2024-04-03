@@ -6,7 +6,6 @@ class Usuarios_model extends CI_Model
     {
         parent::__construct();
     }
-
     public function insertar_usuario($nombre, $apellido, $telefono, $correo, $contrasena, $tipo)
     {
         $data = array(
@@ -19,21 +18,18 @@ class Usuarios_model extends CI_Model
             'status' => 1
         );
 
-        $this->db->insert('Usuarios', $data);
+        $this->db->insert('usuarios', $data);
         return $this->db->insert_id();
     }
-
     public function obtener_usuarios()
     {
         $this->db->select('id, nombre, apellido, telefono, correo, contrasena, tipo, status');
         return $this->db->get('usuarios')->result_array();
     }
-
     public function obtener_usuario($id)
     {
-        return $this->db->get_where('Usuarios', array('id' => $id))->row_array();
+        return $this->db->get_where('usuarios', array('id' => $id))->row_array();
     }
-
     public function actualizar_usuario($id, $datos)
     {
         $campos = ['nombre', 'apellido', 'telefono', 'correo', 'contrasena', 'tipo'];
@@ -47,11 +43,9 @@ class Usuarios_model extends CI_Model
         );
 
         $this->db->where('id', $id);
-        $this->db->update('Usuarios', $datosFiltrados);
+        $this->db->update('usuarios', $datosFiltrados);
         return $this->db->affected_rows();
     }
-
-
     public function eliminar_usuario($id, $status)
     {
         $data = array(
@@ -59,11 +53,9 @@ class Usuarios_model extends CI_Model
         );
 
         $this->db->where('id', $id);
-        $this->db->update('Usuarios', $data);
+        $this->db->update('usuarios', $data);
 
         return $this->db->affected_rows();
     }
-
-
 }
 ?>

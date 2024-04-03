@@ -18,50 +18,41 @@ class Carrito_model extends CI_Model
             JOIN 
                 productos p ON c.producto_id = p.id
             WHERE 
-                c.usuario_id = $usuario_id
-        ");
+                c.usuario_id = ?
+        ", array($usuario_id));
 
         return $query->result_array();
     }
+
     public function mod_actualizar_cantidad($idProd, $cant)
     {
         $query = $this->db->query("
             UPDATE carrito_de_compras
-            SET cantidad = $cant
-            WHERE id = $idProd;
-        ");
+            SET cantidad = ?
+            WHERE id = ?;
+        ", array($cant, $idProd));
     
-        if ($query) {
-            return true;
-        } else {
-            return false;
-        }
+        return $query;
     }
+
     public function mod_eliminar_producto($idProd)
     {
         $query = $this->db->query("
             DELETE FROM carrito_de_compras
-            WHERE id = $idProd;
-        ");
+            WHERE id = ?;
+        ", array($idProd));
     
-        if ($query) {
-            return true;
-        } else {
-            return false;
-        }
+        return $query;
     }   
+
     public function mod_eliminar_carrito($idUser)
     {
         $query = $this->db->query("
             DELETE FROM carrito_de_compras
-            WHERE usuario_id = $idUser;
-        ");
+            WHERE usuario_id = ?;
+        ", array($idUser));
     
-        if ($query) {
-            return true;
-        } else {
-            return false;
-        }
+        return $query;
     }    
 }
 ?>

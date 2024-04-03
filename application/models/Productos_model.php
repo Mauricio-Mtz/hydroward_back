@@ -6,7 +6,6 @@ class Productos_model extends CI_Model
     {
         parent::__construct();
     }
-
     public function insertar_producto($nombre, $descripcion, $precio, $tipo, $stock, $imagen)
     {
         $data = array(
@@ -36,7 +35,6 @@ class Productos_model extends CI_Model
             return $producto_id;
         }
     }
-
     public function actualizar_producto($id, $nombre, $descripcion, $precio, $tipo, $stock, $imagen_nombre)
     {
         $data = array(
@@ -83,9 +81,6 @@ class Productos_model extends CI_Model
 
         return $this->db->affected_rows();
     }
-
-
-
     public function obtener_productos()
     {
         $this->db->select('productos.id, productos.nombre, productos.descripcion, productos.precio, productos.tipo, productos.stock, productos.status');
@@ -103,8 +98,6 @@ class Productos_model extends CI_Model
 
         return $productos;
     }
-
-
     public function obtener_producto($id)
     {
         return $this->db->get_where('productos', array('id' => $id))->row_array();

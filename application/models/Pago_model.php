@@ -18,16 +18,16 @@ class Pago_model extends CI_Model
         }
 
         // Verificar si ya existe una dirección para este usuario
-        $existing_address = $this->db->get_where('Usuarios', array('id' => $usuario_id))->row_array();
+        $existing_address = $this->db->get_where('usuarios', array('id' => $usuario_id))->row_array();
 
         if (!empty($existing_address)) {
             // Si la dirección ya existe, actualizarla
             $this->db->where('id', $usuario_id);
-            $this->db->update('Usuarios', $data);
+            $this->db->update('usuarios', $data);
         } else {
             // Si no existe, insertarla
             $data['id'] = $usuario_id;
-            $this->db->insert('Usuarios', $data);
+            $this->db->insert('usuarios', $data);
         }
 
         return true;
@@ -36,7 +36,7 @@ class Pago_model extends CI_Model
     {
         $this->db->select('direccion, ciudad, estado, cp');
         $this->db->where('id', $usuario_id);
-        $query = $this->db->get('Usuarios');
+        $query = $this->db->get('usuarios');
 
         return($query->num_rows() > 0) ? $query->row_array() : false;
     }

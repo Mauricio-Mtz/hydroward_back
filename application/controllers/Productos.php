@@ -72,22 +72,33 @@ class Productos extends CI_Controller
         $stock = $this->input->post('stock');
 
         $config['upload_path'] = './static/images/';
-        $config['allowed_types'] = 'gif|jpg|png';
+        $config['allowed_types'] = 'gif|jpg|png|webp';
         $this->load->library('upload', $config);
 
-        if (!$this->upload->do_upload('imagen')) {
-            $error = array('error' => $this->upload->display_errors());
-            $this->output->set_output(json_encode([
-                'success' => false,
-                'message' => 'error en la imagen',
-                'error' => $error
-            ]));
-        } else {
-            $data = $this->upload->data();
-            $imagen = $data['file_name'];
+        $imagen_nombre = null;
+
+        if (isset($_FILES['imagen'])) {
+            $imagen = $_FILES['imagen']['name'];
+
+            if (!file_exists($config['upload_path'] . $imagen)) {
+                if (!$this->upload->do_upload('imagen')) {
+                    $error = array('error' => $this->upload->display_errors());
+                    $this->output->set_output(json_encode([
+                        'success' => false,
+                        'message' => 'error en la imagen',
+                        'error' => $error
+                    ]));
+                    return;
+                } else {
+                    $data = $this->upload->data();
+                    $imagen_nombre = $data['file_name'];
+                }
+            } else {
+                $imagen_nombre = $imagen;
+            }
         }
 
-        $result = $this->Productos_model->insertar_producto($nombre, $descripcion, $precio, $tipo, $stock, $imagen);
+        $result = $this->Productos_model->insertar_producto($nombre, $descripcion, $precio, $tipo, $stock, $imagen_nombre);
         if ($result) {
             $response = array(
                 'success' => true,
@@ -116,14 +127,14 @@ class Productos extends CI_Controller
         $stock = $this->input->post('stock');
 
         $config['upload_path'] = './static/images/';
-        $config['allowed_types'] = 'gif|jpg|png';
+        $config['allowed_types'] = 'gif|jpg|png|webp';
         $this->load->library('upload', $config);
 
         $imagen_nombre = null;
 
         if (isset($_FILES['imagen'])) {
             $imagen = $_FILES['imagen']['name'];
-    
+
             if (!file_exists($config['upload_path'] . $imagen)) {
                 if (!$this->upload->do_upload('imagen')) {
                     $error = array('error' => $this->upload->display_errors());

@@ -1,5 +1,5 @@
 <?php
-defined('BASEPATH') or exit ('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Login extends CI_Controller
 {
@@ -110,6 +110,87 @@ class Login extends CI_Controller
                 'message' => 'Hubo un fallo en el registro'
             );
         }
+        echo json_encode($response);
+    }
+
+    public function actualizar_perfil(/*$id, $nombre, $apellido, $telefono, $correo, $contrasena, $imagen_nombre*/)
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+
+        $id = $this->input->post('id');
+        $nombre = $this->input->post('nombre');
+        $apellido = $this->input->post('apellido');
+        $telefono = $this->input->post('telefono');
+        $correo = $this->input->post('correo');
+        $contrasena = $this->input->post('contrasena');
+
+        $config['upload_path'] = './static/usuarios/';
+        $config['allowed_types'] = 'gif|jpg|png|webp';
+        $this->load->library('upload', $config);
+
+        $imagen_nombre = null;
+
+        if (isset($_FILES['imagen'])) {
+            $imagen = $_FILES['imagen']['name'];
+
+            if (!file_exists($config['upload_path'] . $imagen)) {
+                if (!$this->upload->do_upload('imagen')) {
+                    $error = array('error' => $this->upload->display_errors());
+                    $this->output->set_output(json_encode([
+                        'success' => false,
+                        'message' => 'error en la imagen',
+                        'error' => $error
+                    ]));
+                    return;
+                } else {
+                    $data = $this->upload->data();
+                    $imagen_nombre = $data['file_name'];
+                }
+            } else {
+                $imagen_nombre = $imagen;
+            }
+        }
+
+        $result = $this->Login_model->actualizar_perfil($id, $nombre, $apellido, $telefono, $correo, $contrasena, $imagen_nombre);
+        if ($result >= 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Usuario actualizado correctamente'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Error al actualizar perfil'
+            );
+        }
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+    public function actualizar_direccion()
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+
+        $id = $this->input->post('id');
+        $direccion = $this->input->post('direccion');
+        $ciudad = $this->input->post('ciudad');
+        $estado = $this->input->post('estado');
+        $cp = $this->input->post('cp');
+
+        $result = $this->Login_model->actualizar_direccion($id, $direccion, $ciudad, $estado, $cp);
+        if ($result >= 0) {
+            $response = array(
+                'success' => true,
+                'message' => 'Dirección actualizado correctamente'
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Error al actualizar la direcci+on'
+            );
+        }
+        header('Content-Type: application/json');
         echo json_encode($response);
     }
 }

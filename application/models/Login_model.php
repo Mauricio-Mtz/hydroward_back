@@ -38,4 +38,33 @@ class Login_model extends CI_Model
         $this->db->insert('usuarios', $data);
         return $this->db->insert_id();
     }
+    public function actualizar_perfil($id, $nombre, $apellido, $telefono, $correo, $contrasena, $imagen_nombre)
+    {
+        $data = array(
+            'nombre' => $nombre,
+            'apellido' => $apellido,
+            'telefono' => $telefono,
+            'correo' => $correo,
+            'contrasena' => $contrasena,
+            'imagen' => $imagen_nombre,
+        );
+        $this->db->where('id', $id);
+        $this->db->update('usuarios', $data);
+
+        return $this->db->affected_rows();
+    }
+    public function actualizar_direccion($id, $direccion, $ciudad, $estado, $cp)
+    {
+        $data = array(
+            'direccion' => $direccion,
+            'ciudad' => $ciudad,
+            'estado' => $estado,
+            'cp' => $cp,
+        );
+        $this->db->where('id', $id);
+        $this->db->update('usuarios', $data);
+
+        return $this->db->affected_rows();
+    }
+
 }
