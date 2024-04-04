@@ -57,7 +57,7 @@ class Pago extends CI_Controller
             echo json_encode(array('success' => false, 'message' => "No se encontró la dirección para el usuario con ID $id"));
         }
     }
-    public function comprarProd()
+    public function comprarProd(/*$producto_id, $usuario_id, $cantidad, $monto*/)
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
@@ -65,8 +65,9 @@ class Pago extends CI_Controller
         $producto_id = $this->input->post('producto_id');
         $usuario_id = $this->input->post('usuario_id');
         $cantidad = $this->input->post('cantidad');
+        $monto = $this->input->post('monto');
 
-        $venta_realizada = $this->Pago_model->procesarProd($producto_id, $usuario_id, $cantidad);
+        $venta_realizada = $this->Pago_model->procesarProd($producto_id, $usuario_id, $cantidad, $monto);
         if ($venta_realizada) {
             $response = array(
                 'success' => true,

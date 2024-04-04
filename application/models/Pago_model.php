@@ -40,13 +40,13 @@ class Pago_model extends CI_Model
 
         return($query->num_rows() > 0) ? $query->row_array() : false;
     }
-    public function procesarProd($producto_id, $usuario_id, $cantidad)
+    public function procesarProd($producto_id, $usuario_id, $cantidad, $monto)
     {
         // Verificar si hay suficiente stock
         $producto = $this->db->get_where('productos', array('id' => $producto_id))->row();
         if ($producto->stock >= $cantidad) {
             // Calcular monto total
-            $monto_total = $producto->precio * $cantidad;
+            $monto_total = $monto;
 
             // Actualizar el stock
             $nuevo_stock = $producto->stock - $cantidad;
