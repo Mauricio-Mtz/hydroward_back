@@ -4,11 +4,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class Reportes extends CI_Controller
 {
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->load->model('Reportes_model');
     }
-    
+
     public function index()
     {
         header('Access-Control-Allow-Origin: *');
@@ -19,7 +20,6 @@ class Reportes extends CI_Controller
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        header('Content-Type: application/json');
         $productosRep = $this->Reportes_model->getProductoRep($inicio, $fin);
         if ($productosRep) {
             $response = array(
@@ -33,6 +33,7 @@ class Reportes extends CI_Controller
                 'message' => 'No se logró realizar la consulta para el reporte'
             );
         }
+        header('Content-Type: application/json');
         echo json_encode($response);
     }
 
@@ -77,4 +78,5 @@ class Reportes extends CI_Controller
         }
         echo json_encode($response);
     }
+    
 }
