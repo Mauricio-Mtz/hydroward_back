@@ -14,9 +14,28 @@ class Promociones_model extends CI_Model
             'descuento' => $descuento,
             'producto_id' => $producto_id,
         );
+
+        $this->db->db_debug = FALSE;
+
         $this->db->insert('promociones', $data);
-        return $this->db->insert_id();
+        $error = $this->db->error();
+
+        $this->db->db_debug = TRUE;
+
+        if ($error['code']) {
+            return array(
+                'success' => false,
+                'message' => $error['message'],
+            );
+        }
+
+        return array(
+            'success' => true,
+            'message' => 'Promoción agregada correctamente',
+        );
     }
+
+
     public function delete_promocion($id)
     {
         $this->db->where('producto_id', $id);

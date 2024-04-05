@@ -20,27 +20,18 @@ class Promociones extends CI_Controller
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-
+        
         $fecha_inicio = $this->input->post('fecha_inicio');
         $fecha_fin = $this->input->post('fecha_fin');
         $descuento = $this->input->post('descuento');
         $producto_id = $this->input->post('producto_id');
 
         $result = $this->Promociones_model->insertar_promocion($fecha_inicio, $fecha_fin, $descuento, $producto_id);
-        if ($result) {
-            $response = array(
-                'success' => true,
-                'message' => 'Promocion agregada correctamente'
-            );
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Error al agregar promocion'
-            );
-        }
+
         header('Content-Type: application/json');
-        echo json_encode($response);
+        echo json_encode($result);
     }
+
     public function eliminar_promocion($id)
     {
         header('Access-Control-Allow-Origin: *');
