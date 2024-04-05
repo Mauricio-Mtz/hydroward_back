@@ -5,8 +5,14 @@ class Login_model extends CI_Model
     public function get_login($correo, $contrasena)
     {
         $query = $this->db->get_where('usuarios', array('correo' => $correo, 'contrasena' => $contrasena));
-        return $query->row_array();
+        $usuario = $query->row_array();
+        if (!empty($usuario)) {
+            // Llamar al procedimiento almacenado RevisarEstanques
+            $this->db->query("CALL RevisarEstanques(?)", array($usuario['id']));
+        }
+        return $usuario;
     }
+    
     public function get_login_api($correo)
     {
         $query = $this->db->get_where('usuarios', array('correo' => $correo));

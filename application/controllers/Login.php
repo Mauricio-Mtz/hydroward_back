@@ -112,7 +112,6 @@ class Login extends CI_Controller
         }
         echo json_encode($response);
     }
-
     public function actualizar_perfil(/*$id, $nombre, $apellido, $telefono, $correo, $contrasena, $imagen_nombre*/)
     {
         header('Access-Control-Allow-Origin: *');
