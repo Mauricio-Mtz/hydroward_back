@@ -82,6 +82,32 @@ class Pago extends CI_Controller
         }
         echo json_encode($response);
     }
+    public function renovar(/*$producto_id, $usuario_id,$detalle_venta, $cantidad, $monto*/)
+    {
+        header('Access-Control-Allow-Origin: *');
+        header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+        header('Content-Type: application/json');
+        $producto_id = $this->input->post('producto_id');
+        $usuario_id = $this->input->post('usuario_id');
+        $cantidad = $this->input->post('cantidad');
+        $detalle_venta = $this->input->post('detalle_venta');
+        $monto = $this->input->post('monto');
+
+        $renovacionRealizada = $this->Pago_model->procesarRenovacion($producto_id, $usuario_id, $detalle_venta, $cantidad, $monto);
+        if ($renovacionRealizada) {
+            $response = array(
+                'success' => true,
+                'message' => 'La renovación se realizó con exito',
+                'data' => $renovacionRealizada
+            );
+        } else {
+            $response = array(
+                'success' => false,
+                'message' => 'Hubo un fallo en la renovación'
+            );
+        }
+        echo json_encode($response);
+    }
 
     public function comprarCart(/*$usuario_id*/)
     {

@@ -18,7 +18,6 @@ class History extends CI_Controller
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        header('Content-Type: application/json');
         $history = $this->History_model->historial($id);
         if ($history) {
             $response = array(
@@ -32,6 +31,7 @@ class History extends CI_Controller
                 'message' => 'No se encontró el historial'
             );
         }
+        header('Content-Type: application/json');
         echo json_encode($response);
     }
 }
