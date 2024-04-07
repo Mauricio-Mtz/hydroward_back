@@ -41,7 +41,6 @@ class Reportes extends CI_Controller
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        header('Content-Type: application/json');
         $usuariosRep = $this->Reportes_model->getClienteRep($inicio, $fin);
         if ($usuariosRep) {
             $response = array(
@@ -55,6 +54,7 @@ class Reportes extends CI_Controller
                 'message' => 'No se logró realizar la consulta para el reporte'
             );
         }
+        header('Content-Type: application/json');
         echo json_encode($response);
     }
 
@@ -62,7 +62,6 @@ class Reportes extends CI_Controller
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-        header('Content-Type: application/json');
         $ventasRep = $this->Reportes_model->getVentaRep($inicio, $fin);
         if ($ventasRep) {
             $response = array(
@@ -76,6 +75,7 @@ class Reportes extends CI_Controller
                 'message' => 'No se logró realizar la consulta para el reporte'
             );
         }
+        header('Content-Type: application/json');
         echo json_encode($response);
     }
     

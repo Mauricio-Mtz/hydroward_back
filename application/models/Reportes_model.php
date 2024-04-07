@@ -37,7 +37,6 @@ class Reportes_model extends CI_Model
         $query = $this->db->get();
         return $query->result();
     }
-
     public function getClienteRep($inicio, $fin)
     {
         $this->db->select('usuarios.nombre, usuarios.apellido, usuarios.correo, COUNT(venta.id) as compras, SUM(venta.monto) as total');
@@ -52,13 +51,29 @@ class Reportes_model extends CI_Model
     }
     public function getVentaRep($inicio, $fin)
     {
-        $this->db->select('venta.id, venta.fecha, venta.monto as total, usuarios.nombre, usuarios.apellido');
-        $this->db->from('venta');
-        $this->db->join('usuarios', 'venta.usuario_id = usuarios.id');
-        $this->db->where('venta.fecha >=', $inicio);
-        $this->db->where('venta.fecha <=', $fin);
-        $this->db->order_by('total', 'desc');
-        $query = $this->db->get();
+        // Crear o reemplazar la vista
+        $create_view_sql = "
+        CREATE OR REPLACE VIEW VentaRep AS
+        SELECT
+            venta.id,
+            venta.fecha,
+            venta.monto as total,
+            usuarios.nombre,
+            usuarios.apellido
+        FROM
+            venta
+        JOIN
+            usuarios ON venta.usuario_id = usuarios.id
+        ORDER BY
+            total DESC
+        ";
+        $this->db->query($create_view_sql);
+    
+        // Hacer la consulta en la vista
+        $this->db->where('fecha >=', $inicio);
+        $this->db->where('fecha <=', $fin);
+        $query = $this->db->get('VentaRep');
         return $query->result();
     }
+    
 }
