@@ -67,12 +67,12 @@ class Alertas extends CI_Controller
     }
 
 
-    public function eliminar_alerta($id)
+    public function eliminar_alerta()
     {
         header('Access-Control-Allow-Origin: *');
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
 
-        // $id = $this->input->post("id");
+        $id = $this->input->post("id");
 
         $result = $this->Alertas_model->eliminar_alerta($id);
 
