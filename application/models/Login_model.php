@@ -52,11 +52,15 @@ class Login_model extends CI_Model
             'telefono' => $telefono,
             'correo' => $correo,
             'contrasena' => $contrasena,
-            'imagen' => $imagen_nombre,
         );
+    
+        if ($imagen_nombre != "Error en la imagen") {
+            $data['imagen'] = $imagen_nombre;
+        }
+    
         $this->db->where('id', $id);
         $this->db->update('usuarios', $data);
-
+    
         return $this->db->affected_rows();
     }
     public function actualizar_direccion($id, $direccion, $ciudad, $estado, $cp)

@@ -21,12 +21,15 @@ class Productos_model extends CI_Model
         $this->db->insert('productos', $data);
         $producto_id = $this->db->insert_id();
 
-        $imagen_data = array(
-            'nombre' => $imagen,
-            'producto_id' => $producto_id
-        );
+        if ($imagen !== "Error en la imagen") {
+            $imagen_data = array(
+                'nombre' => $imagen,
+                'producto_id' => $producto_id
+            );
 
-        $this->db->insert('imagen', $imagen_data);
+            $this->db->insert('imagen', $imagen_data);
+        }
+
         $this->db->trans_complete();
 
         if ($this->db->trans_status() === FALSE) {
@@ -35,6 +38,7 @@ class Productos_model extends CI_Model
             return $producto_id;
         }
     }
+
     public function actualizar_producto($id, $nombre, $descripcion, $precio, $tipo, $stock, $imagen_nombre)
     {
         $data = array(
@@ -61,10 +65,10 @@ class Productos_model extends CI_Model
         $this->db->where('id', $id);
         $this->db->update('productos', $datosFiltrados);
 
-        if ($imagen_nombre) {
+        if ($imagen_nombre !== null) {
             $this->db->where('producto_id', $id);
             $query = $this->db->get('imagen');
-        
+
             if ($query->num_rows() > 0) {
                 // Si existe una entrada, actualízala
                 $this->db->set('nombre', $imagen_nombre);
@@ -75,7 +79,6 @@ class Productos_model extends CI_Model
                 $this->db->insert('imagen', array('nombre' => $imagen_nombre, 'producto_id' => $id));
             }
         }
-        
 
         $this->db->trans_complete();
 

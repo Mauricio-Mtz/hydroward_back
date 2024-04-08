@@ -82,13 +82,7 @@ class Productos extends CI_Controller
 
             if (!file_exists($config['upload_path'] . $imagen)) {
                 if (!$this->upload->do_upload('imagen')) {
-                    $error = array('error' => $this->upload->display_errors());
-                    $this->output->set_output(json_encode([
-                        'success' => false,
-                        'message' => 'error en la imagen',
-                        'error' => $error
-                    ]));
-                    return;
+                    $imagen_nombre = "Error en la imagen";
                 } else {
                     $data = $this->upload->data();
                     $imagen_nombre = $data['file_name'];
@@ -102,7 +96,8 @@ class Productos extends CI_Controller
         if ($result) {
             $response = array(
                 'success' => true,
-                'message' => 'Producto agregado correctamente'
+                'message' => 'Producto agregado correctamente',
+                'imagen' => $imagen_nombre
             );
         } else {
             $response = array(
@@ -112,6 +107,7 @@ class Productos extends CI_Controller
         }
         echo json_encode($response);
     }
+
 
     public function actualizar_producto()
     {
@@ -131,19 +127,14 @@ class Productos extends CI_Controller
         $this->load->library('upload', $config);
 
         $imagen_nombre = null;
+        $image_res = null;
 
         if (isset($_FILES['imagen'])) {
             $imagen = $_FILES['imagen']['name'];
 
             if (!file_exists($config['upload_path'] . $imagen)) {
                 if (!$this->upload->do_upload('imagen')) {
-                    $error = array('error' => $this->upload->display_errors());
-                    $this->output->set_output(json_encode([
-                        'success' => false,
-                        'message' => 'error en la imagen',
-                        'error' => $error
-                    ]));
-                    return;
+                    $image_res = "Error en la imagen";
                 } else {
                     $data = $this->upload->data();
                     $imagen_nombre = $data['file_name'];
@@ -154,10 +145,12 @@ class Productos extends CI_Controller
         }
 
         $result = $this->Productos_model->actualizar_producto($id, $nombre, $descripcion, $precio, $tipo, $stock, $imagen_nombre);
+
         if ($result >= 0) {
             $response = array(
                 'success' => true,
-                'message' => 'Producto actualizado correctamente'
+                'message' => 'Producto actualizado correctamente',
+                'imagen' => $image_res
             );
         } else {
             $response = array(
