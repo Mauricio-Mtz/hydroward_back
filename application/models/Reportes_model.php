@@ -11,7 +11,10 @@ class Reportes_model extends CI_Model
     }
     public function getProductoRep($inicio, $fin)
     {
-        $this->db->select('
+        // Crear o reemplazar la vista
+        $create_view_sql = "
+        CREATE OR REPLACE VIEW ProductoRep AS
+        SELECT 
             productos.id, 
             productos.nombre, 
             SUM(detalle_venta.cantidad) as cantidad, 
@@ -26,16 +29,24 @@ class Reportes_model extends CI_Model
             WHERE promociones.producto_id = productos.id 
             ORDER BY id DESC 
             LIMIT 1) as descuento
-        ');
-        $this->db->from('productos');
-        $this->db->join('detalle_venta', 'productos.id = detalle_venta.producto_id');
-        $this->db->join('venta', 'detalle_venta.venta_id = venta.id');
-        $this->db->where('venta.fecha >=', $inicio);
-        $this->db->where('venta.fecha <=', $fin);
-        $this->db->group_by(array('productos.id', 'productos.nombre'));
-        $this->db->order_by('cantidad', 'desc');
-        $query = $this->db->get();
+        FROM 
+            productos
+        JOIN 
+            detalle_venta ON productos.id = detalle_venta.producto_id
+        JOIN 
+            venta ON detalle_venta.venta_id = venta.id
+        WHERE 
+            venta.fecha >= '$inicio' AND venta.fecha <= '$fin'
+        GROUP BY 
+            productos.id, productos.nombre
+        ORDER BY 
+            cantidad DESC;
+        ";
+        $this->db->query($create_view_sql);
+        
+        $query = $this->db->get('ProductoRep');
         return $query->result();
+        
     }
     public function getClienteRep($inicio, $fin)
     {
@@ -68,12 +79,12 @@ class Reportes_model extends CI_Model
             total DESC
         ";
         $this->db->query($create_view_sql);
-    
+
         // Hacer la consulta en la vista
         $this->db->where('fecha >=', $inicio);
         $this->db->where('fecha <=', $fin);
         $query = $this->db->get('VentaRep');
         return $query->result();
     }
-    
+
 }
